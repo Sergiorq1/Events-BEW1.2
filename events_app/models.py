@@ -4,6 +4,7 @@ from sqlalchemy.orm import backref
 
 # TODO: Create a model called `Guest` with the following fields:
 # - id: primary key
+
 # - name: String column
 # - email: String column
 # - phone: String column
