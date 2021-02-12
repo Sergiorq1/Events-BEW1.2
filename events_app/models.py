@@ -4,7 +4,6 @@ from sqlalchemy.orm import backref
 
 # TODO: Create a model called `Guest` with the following fields:
 # - id: primary key
-
 # - name: String column
 # - email: String column
 # - phone: String column
@@ -12,6 +11,10 @@ from sqlalchemy.orm import backref
 
 class Guest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(25), nullable=False)
+    email = db.Column(db.String(60), nullable=False, unique=True)
+    phone = db.Column(db.String(20), nullable=True, unique=True)
+    events_attending = db.relationshup("Event", secondary= 'guest_event', back_populates= "guests")
 
 # TODO: Create a model called `Event` with the following fields:
 # - id: primary key
@@ -20,14 +23,23 @@ class Guest(db.Model):
 # - date_and_time: DateTime column
 # - guests: relationship to "Guest" table with a secondary table
 
+
 # STRETCH CHALLENGE: Add a field `event_type` as an Enum column that denotes the
 # type of event (Party, Study, Networking, etc)
 
 class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    title =  db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
+    date_and_time = db.Column(db.DateTime, nullable=False)
+    guests = db.relationship("Guest", secondary = 'guest_event', back_populates= 'events_attending')
 
 # TODO: Create a table `guest_event_table` with the following columns:
 # - event_id: Integer column (foreign key)
 # - guest_id: Integer column (foreign key)
 
-guest_event_table = None
+guest_event_table = db.Table(
+    'guest_event',
+    db.Column('guest_id', db.Integer, db.ForeignKey('guest.id')),
+    db.Column('event_id', db.Integer, db.ForeignKey('event.id'))    
+)
